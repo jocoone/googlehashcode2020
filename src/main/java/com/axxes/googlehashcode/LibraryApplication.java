@@ -1,6 +1,6 @@
 package com.axxes.googlehashcode;
 
-import com.axxes.googlehashcode.model.Library;
+import com.axxes.googlehashcode.model.*;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -10,19 +10,25 @@ import java.util.stream.*;
 import static com.axxes.googlehashcode.util.Util.*;
 
 public class LibraryApplication {
-	//	public static final String filename = "a_example";
-	public static final String filename = "c_incunabula";
-	public static final String file = "src/main/resources/" + filename + ".txt";
-	//	private static final String output_file = "a_example_output";
-	private static final String output_file = "c_incunabula_out";
+	public static final String a_filename = "a_example";
+	public static final String b_filename = "b_read_on";
+	public static final String c_filename = "c_incunabula";
+	public static final String d_filename = "d_tough_choices";
+	public static final String e_filename = "e_so_many_books";
+	public static final String f_filename = "f_libraries_of_the_world";
 	private static final String newLine = "\n";
 
 	public static void main(String[] args) {
-		convert();
+		convert(a_filename);
+		convert(b_filename);
+		convert(c_filename);
+		convert(d_filename);
+		convert(e_filename);
+		convert(f_filename);
 	}
 
-	private static void convert() {
-		final List<String> lines = readLines(Paths.get(file)
+	private static void convert(String file) {
+		final List<String> lines = readLines(Paths.get("src/main/resources/" + file + ".txt")
 												  .toString(), 0);
 		String[] firstLine = lines.get(0)
 								  .split(" ");
@@ -38,7 +44,6 @@ public class LibraryApplication {
 		for (int i = 2; i < lines.size() - 1; i += 2) {
 			String[] libraryProperties = lines.get(i)
 											  .split(" ");
-			int amountOfBooks = Integer.parseInt(libraryProperties[0]);
 			int processedDays = Integer.parseInt(libraryProperties[1]);
 			int signupDays = Integer.parseInt(libraryProperties[2]);
 
@@ -49,13 +54,21 @@ public class LibraryApplication {
 			lib.id = indexLib;
 			lib.books = Stream.of(lines.get(i + 1)
 									   .split(" "))
+							  .distinct()
 							  .map(Integer::parseInt)
+							  .map(j -> {
+								  Book book = new Book();
+								  book.id = j;
+								  book.score = books[j];
+								  return book;
+							  })
+							  .sorted((o1, o2) -> Integer.compare(o2.score, o1.score))
 							  .collect(Collectors.toList());
 
 			libraries.add(lib);
 			indexLib++;
 		}
-		createOutput(output_file, libraries, days);
+		createOutput(file + "_out", libraries, days);
 	}
 
 	public static void createOutput(String fileName, List<Library> libraries, int totalDays) {
@@ -63,7 +76,7 @@ public class LibraryApplication {
 			AtomicInteger ai = new AtomicInteger(totalDays);
 			@Override
 			public int compare(final Library o1, final Library o2) {
-				return getDaysNeededToUploadLibrary(o1, ai) - getDaysNeededToUploadLibrary(o2, ai);
+				return getDaysNeededToUploadLibrary(o2, ai) - getDaysNeededToUploadLibrary(o1, ai);
 			}
 		});
 		final StringBuilder builder = new StringBuilder("" + libraries.size()).append(newLine);
@@ -72,7 +85,7 @@ public class LibraryApplication {
 				   .append(" ")
 				   .append(lib.books.size())
 				   .append(newLine);
-			lib.books.forEach(b -> builder.append(b)
+			lib.books.forEach(b -> builder.append(b.id)
 										  .append(" "));
 			builder.append(newLine);
 		});

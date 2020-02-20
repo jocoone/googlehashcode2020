@@ -6,5 +6,5 @@ public class Library {
 	public int id;
 	public int bookPerDay;
 	public int signUp;
-	public List<Integer> books;
+	public List<Book> books;
 }
