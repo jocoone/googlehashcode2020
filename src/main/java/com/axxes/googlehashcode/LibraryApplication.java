@@ -1,6 +1,6 @@
 package com.axxes.googlehashcode;
 
-import com.axxes.googlehashcode.model.Library;
+import com.axxes.googlehashcode.model.*;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -9,20 +9,21 @@ import java.util.stream.*;
 import static com.axxes.googlehashcode.util.Util.*;
 
 public class LibraryApplication {
-	//	public static final String filename = "a_example";
-	public static final String filename = "b_read_on";
-	public static final String file = "src/main/resources/" + filename + ".txt";
-	//	private static final String output_file = "a_example_output";
-	private static final String output_file = "b_read_on_output";
+	public static final String a_filename = "src/main/resources/a_example.txt";
+	public static final String b_filename = "src/main/resources/b_read_on.txt";
+	private static final String a_output_file = "a_example_output";
+	private static final String b_output_file = "b_read_on_output";
 	private static final String newLine = "\n";
 
 	public static void main(String[] args) {
-		List<Library> libraries = convert();
+		List<Library> librariesA = convert(a_filename);
+		List<Library> librariesB = convert(b_filename);
 
-		createOutput(output_file, libraries);
+		createOutput(a_output_file, librariesA);
+		createOutput(b_output_file, librariesB);
 	}
 
-	private static List<Library> convert() {
+	private static List<Library> convert(String file) {
 		final List<String> lines = readLines(Paths.get(file)
 												  .toString(), 0);
 		String[] firstLine = lines.get(0)
@@ -39,7 +40,6 @@ public class LibraryApplication {
 		for (int i = 2; i < lines.size() - 1; i += 2) {
 			String[] libraryProperties = lines.get(i)
 											  .split(" ");
-			int amountOfBooks = Integer.parseInt(libraryProperties[0]);
 			int processedDays = Integer.parseInt(libraryProperties[1]);
 			int signupDays = Integer.parseInt(libraryProperties[2]);
 
@@ -51,6 +51,18 @@ public class LibraryApplication {
 			lib.books = Stream.of(lines.get(i + 1)
 									   .split(" "))
 							  .map(Integer::parseInt)
+							  .map(j -> {
+								  Book book = new Book();
+								  book.id = j;
+								  book.score = books[j];
+								  return book;
+							  })
+							  .sorted(new Comparator<Book>() {
+								  @Override
+								  public int compare(Book o1, Book o2) {
+									  return Integer.compare(o2.score, o1.score);
+								  }
+							  })
 							  .collect(Collectors.toList());
 
 			libraries.add(lib);
@@ -66,7 +78,7 @@ public class LibraryApplication {
 				   .append(" ")
 				   .append(lib.books.size())
 				   .append(newLine);
-			lib.books.forEach(b -> builder.append(b)
+			lib.books.forEach(b -> builder.append(b.id)
 										  .append(" "));
 			builder.append(newLine);
 		});
