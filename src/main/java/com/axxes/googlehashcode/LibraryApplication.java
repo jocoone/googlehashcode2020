@@ -11,16 +11,32 @@ import static com.axxes.googlehashcode.util.Util.*;
 public class LibraryApplication {
 	public static final String a_filename = "src/main/resources/a_example.txt";
 	public static final String b_filename = "src/main/resources/b_read_on.txt";
-	private static final String a_output_file = "a_example_output";
-	private static final String b_output_file = "b_read_on_output";
+	public static final String c_filename = "src/main/resources/c_incunabula.txt";
+	public static final String d_filename = "src/main/resources/d_tough_choices.txt";
+	public static final String e_filename = "src/main/resources/e_so_many_books.txt";
+	public static final String f_filename = "src/main/resources/f_libraries_of_the_world.txt";
+	private static final String a_output_file = "a__output";
+	private static final String b_output_file = "b_output";
+	private static final String c_output_file = "c__output";
+	private static final String d_output_file = "d__output";
+	private static final String e_output_file = "e__output";
+	private static final String f_output_file = "f__output";
 	private static final String newLine = "\n";
 
 	public static void main(String[] args) {
 		List<Library> librariesA = convert(a_filename);
 		List<Library> librariesB = convert(b_filename);
+		List<Library> librariesC = convert(c_filename);
+		List<Library> librariesD = convert(d_filename);
+		List<Library> librariesE = convert(e_filename);
+		List<Library> librariesF = convert(f_filename);
 
 		createOutput(a_output_file, librariesA);
 		createOutput(b_output_file, librariesB);
+		createOutput(c_output_file, librariesC);
+		createOutput(d_output_file, librariesD);
+		createOutput(e_output_file, librariesE);
+		createOutput(f_output_file, librariesF);
 	}
 
 	private static List<Library> convert(String file) {
@@ -50,6 +66,7 @@ public class LibraryApplication {
 			lib.id = indexLib;
 			lib.books = Stream.of(lines.get(i + 1)
 									   .split(" "))
+							  .distinct()
 							  .map(Integer::parseInt)
 							  .map(j -> {
 								  Book book = new Book();
