@@ -72,13 +72,7 @@ public class LibraryApplication {
 	}
 
 	public static void createOutput(String fileName, List<Library> libraries, int totalDays) {
-		libraries.sort(new Comparator<Library>() {
-			AtomicInteger ai = new AtomicInteger(totalDays);
-			@Override
-			public int compare(final Library o1, final Library o2) {
-				return getDaysNeededToUploadLibrary(o2, ai) - getDaysNeededToUploadLibrary(o1, ai);
-			}
-		});
+		libraries.sort((o1, o2) -> o2.getDaysNeededToUploadLibrary() - o1.getDaysNeededToUploadLibrary());
 		final StringBuilder builder = new StringBuilder("" + libraries.size()).append(newLine);
 		libraries.forEach(lib -> {
 			builder.append(lib.id)
@@ -90,9 +84,5 @@ public class LibraryApplication {
 			builder.append(newLine);
 		});
 		writeString(fileName, builder.toString());
-	}
-
-	private static int getDaysNeededToUploadLibrary(final Library library, final AtomicInteger ai) {
-		return (library.books.size() / library.bookPerDay + library.signUp);
 	}
 }
