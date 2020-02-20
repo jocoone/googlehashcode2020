@@ -4,25 +4,24 @@ import com.axxes.googlehashcode.model.Library;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.*;
 
 import static com.axxes.googlehashcode.util.Util.*;
 
 public class LibraryApplication {
 	//	public static final String filename = "a_example";
-	public static final String filename = "b_read_on";
+	public static final String filename = "c_incunabula";
 	public static final String file = "src/main/resources/" + filename + ".txt";
 	//	private static final String output_file = "a_example_output";
-	private static final String output_file = "b_read_on_output";
+	private static final String output_file = "c_incunabula_out";
 	private static final String newLine = "\n";
 
 	public static void main(String[] args) {
-		List<Library> libraries = convert();
-
-		createOutput(output_file, libraries);
+		convert();
 	}
 
-	private static List<Library> convert() {
+	private static void convert() {
 		final List<String> lines = readLines(Paths.get(file)
 												  .toString(), 0);
 		String[] firstLine = lines.get(0)
@@ -56,10 +55,17 @@ public class LibraryApplication {
 			libraries.add(lib);
 			indexLib++;
 		}
-		return libraries;
+		createOutput(output_file, libraries, days);
 	}
 
-	public static void createOutput(String fileName, List<Library> libraries) {
+	public static void createOutput(String fileName, List<Library> libraries, int totalDays) {
+		libraries.sort(new Comparator<Library>() {
+			AtomicInteger ai = new AtomicInteger(totalDays);
+			@Override
+			public int compare(final Library o1, final Library o2) {
+				return getDaysNeededToUploadLibrary(o1, ai) - getDaysNeededToUploadLibrary(o2, ai);
+			}
+		});
 		final StringBuilder builder = new StringBuilder("" + libraries.size()).append(newLine);
 		libraries.forEach(lib -> {
 			builder.append(lib.id)
@@ -71,5 +77,9 @@ public class LibraryApplication {
 			builder.append(newLine);
 		});
 		writeString(fileName, builder.toString());
+	}
+
+	private static int getDaysNeededToUploadLibrary(final Library library, final AtomicInteger ai) {
+		return (library.books.size() / library.bookPerDay + library.signUp);
 	}
 }
