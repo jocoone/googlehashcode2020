@@ -4,9 +4,9 @@ import com.axxes.googlehashcode.model.Library;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.*;
 
-import static com.axxes.googlehashcode.util.Util.readLines;
-import static com.axxes.googlehashcode.util.Util.writeString;
+import static com.axxes.googlehashcode.util.Util.*;
 
 public class LibraryApplication {
 	public static final String filename = "a_example";
@@ -25,22 +25,36 @@ public class LibraryApplication {
 		for (int i = 0; i < second.length; i++) {
 			books[i] = Integer.parseInt(second[i]);
 		}
-		for (int i = 2; i < lines.size(); i++) {
+		int indexLib = 0;
+		for (int i = 2; i < lines.size() - 1; i++) {
 			String[] libraryProperties = lines.get(i)
 											  .split(" ");
 			int amountOfBooks = Integer.parseInt(libraryProperties[0]);
 			int processedDays = Integer.parseInt(libraryProperties[1]);
 			int signupDays = Integer.parseInt(libraryProperties[2]);
 
-			// String second = lines.get(i + 1);
+			Library lib = libraries[indexLib];
+
+			lib.bookPerDay = processedDays;
+			lib.signUp = signupDays;
+			lib.id = indexLib;
+			lib.books = Stream.of(lines.get(i + 1)
+									   .split(" "))
+							  .map(Integer::parseInt)
+							  .collect(Collectors.toList());
+			indexLib++;
 		}
 	}
 
 	public static void createOutput(String fileName, List<Library> libraries) {
 		final StringBuilder builder = new StringBuilder("" + libraries.size());
 		libraries.forEach(lib -> {
-			builder.append(lib.id).append(" ").append(lib.books.size()).append("\n");
-			lib.books.forEach(b -> builder.append(b).append(" "));
+			builder.append(lib.id)
+				   .append(" ")
+				   .append(lib.books.size())
+				   .append("\n");
+			lib.books.forEach(b -> builder.append(b)
+										  .append(" "));
 		});
 		writeString(fileName, builder.toString());
 	}
