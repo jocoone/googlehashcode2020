@@ -5,7 +5,7 @@ import com.axxes.googlehashcode.util.Util;
 import java.util.Collection;
 
 public class OutputService {
-	public void la(Collection<Library> libraries) {
+	/*public void la(Collection<Library> libraries) {
 		StringBuilder stringBuilder = new StringBuilder();
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuilder.append(libraries.size() + "\n");
@@ -20,5 +20,5 @@ public class OutputService {
 		});
 
 		Util.printLines();
-	}
+	}*/
 }

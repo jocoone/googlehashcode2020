@@ -1,9 +1,18 @@
 package com.axxes.googlehashcode.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Library {
+	public int id;
 	private int amountBooks;
 	private int bookPerDay;
 	private int signUp;
+	public List<Integer> books;
+
+	public Library() {
+		books = new ArrayList<>();
+	}
 
 	public int getAmountBooks() {
 		return amountBooks;

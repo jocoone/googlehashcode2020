@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static com.axxes.googlehashcode.util.Util.readLines;
+import static com.axxes.googlehashcode.util.Util.writeString;
 
 public class LibraryApplication {
 	public static final String filename = "a_example";
@@ -31,7 +32,16 @@ public class LibraryApplication {
 			int processedDays = Integer.parseInt(libraryProperties[1]);
 			int signupDays = Integer.parseInt(libraryProperties[2]);
 
-			String second = lines.get(i + 1);
+			// String second = lines.get(i + 1);
 		}
+	}
+
+	public static void createOutput(String fileName, List<Library> libraries) {
+		final StringBuilder builder = new StringBuilder("" + libraries.size());
+		libraries.forEach(lib -> {
+			builder.append(lib.id).append(" ").append(lib.books.size()).append("\n");
+			lib.books.forEach(b -> builder.append(b).append(" "));
+		});
+		writeString(fileName, builder.toString());
 	}
 }
