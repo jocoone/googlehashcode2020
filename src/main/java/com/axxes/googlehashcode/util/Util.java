@@ -27,7 +27,7 @@ public class Util {
 
     public static Stream<String> readLinesAsStream(final String fileName) {
         try {
-            return Files.readAllLines(Path.of(URI.create("file://" + Paths.get(fileName).toAbsolutePath()))).stream();
+            return Files.readAllLines(Paths.get(URI.create("file://" + Paths.get(fileName).toAbsolutePath()))).stream();
         } catch (IOException e) {
             throw new ImpossibleFileException(e);
         }
