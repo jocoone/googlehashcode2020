@@ -1,6 +1,6 @@
 package com.axxes.googlehashcode.model;
 
 public class Book {
-	public int id;
+	public Integer id;
 	public int score;
 }
